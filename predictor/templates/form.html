@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House Price Predictor</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page-wrapper">
+    <main class="main-content">
+      <div class="container">
+        <div class="form-wrapper">
+          <h2><span class="logo-icon">🏡</span> House Price Predictor</h2>
+
+          <!-- Loading Spinner -->
+          <div id="loading-spinner" class="spinner-overlay" style="display:none;">
+            <div class="spinner"></div>
+            <div class="spinner-text">Predicting price...</div>
+          </div>
+
+          <form method="post" id="predict-form" autocomplete="off">
+            {% csrf_token %}
+            
+            <!-- Basic Property Details -->
+            <div class="form-section">
+              <h3>📋 Basic Property Details</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  {{ form.carpet_area.label_tag }}
+                  {{ form.carpet_area }}
+                  {% if form.carpet_area.errors %}
+                    <div class="error">{{ form.carpet_area.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.bedroom.label_tag }}
+                  {{ form.bedroom }}
+                  {% if form.bedroom.errors %}
+                    <div class="error">{{ form.bedroom.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  {{ form.bathroom.label_tag }}
+                  {{ form.bathroom }}
+                  {% if form.bathroom.errors %}
+                    <div class="error">{{ form.bathroom.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.parking.label_tag }}
+                  {{ form.parking }}
+                  {% if form.parking.errors %}
+                    <div class="error">{{ form.parking.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Property Information -->
+            <div class="form-section">
+              <h3>🏠 Property Information</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  {{ form.city.label_tag }}
+                  {{ form.city }}
+                  {% if form.city.errors %}
+                    <div class="error">{{ form.city.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.property_type.label_tag }}
+                  {{ form.property_type }}
+                  {% if form.property_type.errors %}
+                    <div class="error">{{ form.property_type.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  {{ form.furnished_type.label_tag }}
+                  {{ form.furnished_type }}
+                  {% if form.furnished_type.errors %}
+                    <div class="error">{{ form.furnished_type.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.ownership_type.label_tag }}
+                  {{ form.ownership_type }}
+                  {% if form.ownership_type.errors %}
+                    <div class="error">{{ form.ownership_type.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  {{ form.possession_status.label_tag }}
+                  {{ form.possession_status }}
+                  {% if form.possession_status.errors %}
+                    <div class="error">{{ form.possession_status.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="form-group conditional-field-group" id="floor-number-group" style="display: none;">
+                  {{ form.floor_number.label_tag }}
+                  {{ form.floor_number }}
+                  {% if form.floor_number.errors %}
+                    <div class="error">{{ form.floor_number.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+         <!-- Amenities -->
+<div class="form-section">
+  <h3>🏊‍♂️ Amenities</h3>
+  <div class="amenities-container">
+    <div class="amenities-grid">
+      {% for checkbox in form.amenities %}
+        <div class="amenity-item">
+          {{ checkbox }}
+        </div>
+      {% endfor %}
+    </div>
+    {% if form.amenities.errors %}
+      <div class="error">{{ form.amenities.errors }}</div>
+    {% endif %}
+  </div>
+</div>
+
+            <div class="form-row" style="margin-top: 20px; gap: 10px;">
+              <button type="submit" class="btn" id="predict-btn">Predict Price</button>
+              <button type="button" class="btn btn-reset" id="reset-btn" style="background:linear-gradient(135deg,#e0eafc 0%,#cfdef3 100%);color:#667eea;font-weight:600;">Reset</button>
+            </div>
+          </form>
+
+          {% if price_inr %}
+            <div class="result" id="result-block">
+              {% if price_inr|slice:":12" == "We're sorry" %}
+                <div style="text-align: center;">
+                  <div style="font-size: 1.2rem; margin-bottom: 10px;">⚠️</div>
+                  <strong>{{ price_inr }}</strong>
+                </div>
+              {% else %}
+                💰 Estimated Price: <strong>₹ {{ price_inr }}</strong>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </main>
+
+    <!-- Fixed Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <p>© All rights reserved. Developed by Jivitesh.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const propertyTypeSelect = document.querySelector('select[name="property_type"]');
+      const floorNumberGroup = document.getElementById('floor-number-group');
+      const floorNumberSelect = document.querySelector('select[name="floor_number"]');
+      const form = document.getElementById('predict-form');
+      const spinner = document.getElementById('loading-spinner');
+      const resetBtn = document.getElementById('reset-btn');
+      const amenitiesCheckboxes = document.querySelectorAll('.amenities-checkboxes input[type="checkbox"]');
+      const resultBlock = document.getElementById('result-block');
+      const downloadBtn = document.getElementById('download-pdf-btn');
+
+      function toggleFloorNumber() {
+          const selectedValue = propertyTypeSelect.value;
+          if (selectedValue === 'Apartment') {
+              floorNumberGroup.style.display = 'block';
+              floorNumberSelect.required = true;
+          } else {
+              floorNumberGroup.style.display = 'none';
+              floorNumberSelect.required = false;
+              floorNumberSelect.value = '';
+          }
+      }
+      toggleFloorNumber();
+      propertyTypeSelect.addEventListener('change', toggleFloorNumber);
+
+      // Loading spinner on submit
+      form.addEventListener('submit', function(e) {
+        spinner.style.display = 'flex';
+      });
+
+      // Reset button logic
+      resetBtn.addEventListener('click', function() {
+        form.reset();
+        // Reset amenities checkboxes
+        amenitiesCheckboxes.forEach(cb => cb.checked = false);
+        // Hide floor number if not apartment
+        toggleFloorNumber();
+      });
+
+      // Hide spinner if page is loaded (in case of back navigation)
+      window.addEventListener('pageshow', function() {
+        spinner.style.display = 'none';
+      });
+  });
+  </script>
+</body>
+</html>
