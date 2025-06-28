@@ -50,12 +50,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'house_project.wsgi.application'
 
-# 🚫 NO DATABASE
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.dummy',  # disables DB usage
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+
 
 AUTH_PASSWORD_VALIDATORS = []
 
