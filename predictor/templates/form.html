@@ -11,7 +11,40 @@
 <body>
   <div class="page-wrapper">
     <main class="main-content">
-      <div class="container">
+      <div class="container insights-layout">
+        <!-- Left Info Panel -->
+        <aside class="info-panel info-panel-left">
+          <div class="info-heading"><span class="info-heading-icon">📈</span> Dataset Analysis</div>
+          <div class="info-card">
+            <div class="info-icon">📊</div>
+            <div class="info-content">
+              <h4>Total Listings</h4>
+              <p>16,444</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">🌆</div>
+            <div class="info-content">
+              <h4>Cities Covered</h4>
+              <p>12</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">📐</div>
+            <div class="info-content">
+              <h4>Avg. Carpet Area</h4>
+              <p>1,094 sq. ft.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">🏢</div>
+            <div class="info-content">
+              <h4>Most Common Type</h4>
+              <p>Apartment</p>
+            </div>
+          </div>
+        </aside>
+        <!-- Centered Form -->
         <div class="form-wrapper">
           <h2><span class="logo-icon">🏡</span> House Price Predictor</h2>
 
@@ -153,6 +186,35 @@
             </div>
           {% endif %}
         </div>
+        <!-- Right Info Panel -->
+        <aside class="info-panel info-panel-right">
+          <div class="info-heading"><span class="info-heading-icon">📈</span> Dataset Analysis</div>
+          <div class="info-card">
+            <div class="info-icon">💸</div>
+            <div class="info-content">
+              <h4>Average Price</h4>
+              <p>₹1.29 Cr</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">🏙️</div>
+            <div class="info-content">
+              <h4>Highest Avg. Price City</h4>
+              <p>Mumbai</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-icon">🛋️</div>
+            <div class="info-content">
+              <h4>Furnishing Types</h4>
+              <ul class="furnishing-list">
+                <li>Fully Furnished: <strong>1,785</strong></li>
+                <li>Semi Furnished: <strong>6,432</strong></li>
+                <li>Unfurnished: <strong>8,227</strong></li>
+              </ul>
+            </div>
+          </div>
+        </aside>
       </div>
     </main>
 
